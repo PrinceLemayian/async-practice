@@ -23,45 +23,55 @@ const renderCountry = function (data, className = '') {
   countriesContainer.insertAdjacentHTML('beforeend', html);
   countriesContainer.style.opacity = 1;
 };
+//
+// const getCountryAndNeighbour = function (country) {
+//   // AJAX call country1
+//   const request = new XMLHttpRequest();
+//
+//   request.open(
+//     'GET',
+//     `https://api.restcountries.com/countries/v5/names.common/${country}`,
+//   );
+//   request.setRequestHeader('Authorization', `Bearer ${CONFIG.API_KEY}`);
+//   request.send();
+//
+//   request.addEventListener('load', function () {
+//     const data = JSON.parse(this.responseText).data.objects[0];
+//
+//     // Render country 1
+//     renderCountry(data);
+//
+//     // Get neighbour country (2)
+//     const [neighbour] = data.borders;
+//
+//     if (!neighbour) return;
+//
+//     // AJAX call country 2
+//     const request2 = new XMLHttpRequest();
+//
+//     request2.open(
+//       'GET',
+//       `https://api.restcountries.com/countries/v5/codes.alpha_3/${neighbour}`,
+//     );
+//     request2.setRequestHeader('Authorization', `Bearer ${CONFIG.API_KEY}`);
+//     request2.send();
+//
+//     request2.addEventListener('load', function () {
+//       const data2 = JSON.parse(this.responseText).data.objects[0];
+//
+//       renderCountry(data2, 'neighbour');
+//     });
+//   });
+// };
+//
+// getCountryAndNeighbour('united states');
 
-const getCountryAndNeighbour = function (country) {
-  // AJAX call country1
-  const request = new XMLHttpRequest();
-
-  request.open(
-    'GET',
-    `https://api.restcountries.com/countries/v5/names.common/${country}`,
-  );
-  request.setRequestHeader('Authorization', `Bearer ${CONFIG.API_KEY}`);
-  request.send();
-
-  request.addEventListener('load', function () {
-    const data = JSON.parse(this.responseText).data.objects[0];
-
-    // Render country 1
-    renderCountry(data);
-
-    // Get neighbour country (2)
-    const [neighbour] = data.borders;
-
-    if (!neighbour) return;
-
-    // AJAX call country 2
-    const request2 = new XMLHttpRequest();
-
-    request2.open(
-      'GET',
-      `https://api.restcountries.com/countries/v5/codes.alpha_3/${neighbour}`,
-    );
-    request2.setRequestHeader('Authorization', `Bearer ${CONFIG.API_KEY}`);
-    request2.send();
-
-    request2.addEventListener('load', function () {
-      const data2 = JSON.parse(this.responseText).data.objects[0];
-
-      renderCountry(data2, 'neighbour');
-    });
-  });
+const getCountryData = function (country) {
+  fetch(`https://api.restcountries.com/countries/v5/names.common/${country}`, {
+    headers: { Authorization: `Bearer ${CONFIG.API_KEY}` },
+  })
+    .then(response => response.json())
+    .then(data => renderCountry(data.data.objects[0]));
 };
 
-getCountryAndNeighbour('united states');
+getCountryData('kenya');
