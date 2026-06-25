@@ -71,7 +71,22 @@ const getCountryData = function (country) {
     headers: { Authorization: `Bearer ${CONFIG.API_KEY}` },
   })
     .then(response => response.json())
-    .then(data => renderCountry(data.data.objects[0]));
+    .then(data => {
+      renderCountry(data.data.objects[0]);
+      const neighbour = data.data.objects[0].borders[0];
+
+      if (!neighbour) return;
+
+      // Country 2
+      return fetch(
+        `https://api.restcountries.com/countries/v5/codes.alpha_3/${neighbour}`,
+        {
+          headers: { Authorization: `Bearer ${CONFIG.API_KEY}` },
+        },
+      );
+    })
+    .then(response => response.json())
+    .then(data => renderCountry(data.data.objects[0], 'neighbour'));
 };
 
 getCountryData('kenya');
