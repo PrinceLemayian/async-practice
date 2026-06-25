@@ -72,26 +72,78 @@ const renderError = function (msg) {
 //
 // getCountryAndNeighbour('united states');
 
+const getJSON = function (
+  url,
+  errorMsg = 'Something went wrong',
+  options = {},
+) {
+  return fetch(url, options).then(response => {
+    if (!response.ok) throw new Error(`${errorMsg} (${response.status})`);
+
+    return response.json();
+  });
+};
+
+// const getCountryData = function (country) {
+//   fetch(`https://api.restcountries.com/countries/v5/names.common/${country}`, {
+//     headers: { Authorization: `Bearer ${CONFIG.API_KEY}` },
+//   })
+//     .then(response => {
+//       if (!response.ok)
+//         throw new Error(`Country not found (${response.status})`);
+//
+//       return response.json();
+//     })
+//     .then(data => {
+//       renderCountry(data.data.objects[0]);
+//       const neighbour = data.data.objects[0].borders[0];
+//
+//       if (!neighbour) return;
+//
+//       // Country 2
+//       return fetch(
+//         `https://api.restcountries.com/countries/v5/codes.alpha_3/${neighbour}`,
+//         {
+//           headers: { Authorization: `Bearer ${CONFIG.API_KEY}` },
+//         },
+//       );
+//     })
+//     .then(response => response.json())
+//     .then(data => renderCountry(data.data.objects[0], 'neighbour'))
+//     .catch(err => {
+//       console.error(`${err} ⚠️`);
+//       renderError(`Something went wrong ⚠️ ${err.message}. Try again!`);
+//     })
+//     .finally(() => {
+//       countriesContainer.style.opacity = 1;
+//     });
+// };
+
 const getCountryData = function (country) {
-  fetch(`https://api.restcountries.com/countries/v5/names.common/${country}`, {
-    headers: { Authorization: `Bearer ${CONFIG.API_KEY}` },
-  })
-    .then(response => response.json())
+  // Country 1
+
+  getJSON(
+    `https://api.restcountries.com/countries/v5/names.common/${country}`,
+    'Country not found',
+    {
+      headers: { Authorization: `Bearer ${CONFIG.API_KEY}` },
+    },
+  )
     .then(data => {
       renderCountry(data.data.objects[0]);
       const neighbour = data.data.objects[0].borders[0];
 
-      if (!neighbour) return;
+      if (!neighbour) throw new Error(`No neighbour found!`);
 
       // Country 2
-      return fetch(
+      return getJSON(
         `https://api.restcountries.com/countries/v5/codes.alpha_3/${neighbour}`,
+        'Country not found',
         {
           headers: { Authorization: `Bearer ${CONFIG.API_KEY}` },
         },
       );
     })
-    .then(response => response.json())
     .then(data => renderCountry(data.data.objects[0], 'neighbour'))
     .catch(err => {
       console.error(`${err} ⚠️`);
