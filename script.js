@@ -3,10 +3,6 @@
 const btn = document.querySelector('.btn-country');
 const countriesContainer = document.querySelector('.countries');
 
-// https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}
-
-///////////////////////////////////////
-
 const renderCountry = function (data, className = '') {
   const html = `
 <article class="country ${className}">
@@ -21,8 +17,18 @@ const renderCountry = function (data, className = '') {
         </article>
 `;
   countriesContainer.insertAdjacentHTML('beforeend', html);
-  countriesContainer.style.opacity = 1;
+  // countriesContainer.style.opacity = 1;
 };
+
+const renderError = function (msg) {
+  countriesContainer.insertAdjacentText('beforeend', msg);
+  // countriesContainer.style.opacity = 1;
+};
+
+// https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}
+
+///////////////////////////////////////
+
 //
 // const getCountryAndNeighbour = function (country) {
 //   // AJAX call country1
@@ -86,7 +92,16 @@ const getCountryData = function (country) {
       );
     })
     .then(response => response.json())
-    .then(data => renderCountry(data.data.objects[0], 'neighbour'));
+    .then(data => renderCountry(data.data.objects[0], 'neighbour'))
+    .catch(err => {
+      console.error(`${err} ⚠️`);
+      renderError(`Something went wrong ⚠️ ${err.message}. Try again!`);
+    })
+    .finally(() => {
+      countriesContainer.style.opacity = 1;
+    });
 };
 
-getCountryData('kenya');
+btn.addEventListener('click', function () {
+  getCountryData('kenya');
+});
