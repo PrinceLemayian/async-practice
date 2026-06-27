@@ -160,5 +160,6 @@ const getCountryData = function (country) {
 };
 
 btn.addEventListener('click', function () {
-  getCountryData('kenya');
+  btn.disabled = true;
+  getCountryData('kenya').finally(() => (btn.disabled = false));
 });
