@@ -2,6 +2,8 @@
 
 const btn = document.querySelector('.btn-country');
 const countriesContainer = document.querySelector('.countries');
+const BASE_URL = 'https://api.restcountries.com/countries/v5';
+const AUTH_OPTIONS = { headers: { Authorization: `Bearer ${CONFIG.API_KEY}` } };
 
 const renderCountry = function (data, className = '') {
   const html = `
@@ -126,11 +128,9 @@ const getCountryData = function (country) {
   // Country 1
 
   getJSON(
-    `https://api.restcountries.com/countries/v5/names.common/${country}`,
+    `${BASE_URL}/names.common/${country}`,
     'Country not found',
-    {
-      headers: { Authorization: `Bearer ${CONFIG.API_KEY}` },
-    },
+    AUTH_OPTIONS,
   )
     .then(data => {
       renderCountry(data.data.objects[0]);
@@ -140,11 +140,9 @@ const getCountryData = function (country) {
 
       // Country 2
       return getJSON(
-        `https://api.restcountries.com/countries/v5/codes.alpha_3/${neighbour}`,
+        `BASE_URL/codes.alpha_3/${neighbour}`,
         'Country not found',
-        {
-          headers: { Authorization: `Bearer ${CONFIG.API_KEY}` },
-        },
+        AUTH_OPTIONS,
       );
     })
     .then(data => renderCountry(data.data.objects[0], 'neighbour'))
