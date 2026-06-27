@@ -127,21 +127,21 @@ const getCountryData = function (country) {
   countriesContainer.style.opacity = 0;
   // Country 1
 
-  getJSON(
+  return getJSON(
     `${BASE_URL}/names.common/${country}`,
     'Country not found',
     AUTH_OPTIONS,
   )
     .then(data => {
-      const country = data.data.objects[0];
-      renderCountry(country);
-      const neighbour = country.borders[0];
+      const countryData = data.data.objects[0];
+      renderCountry(countryData);
+      const neighbour = countryData.borders?.[0];
 
       if (!neighbour) throw new Error(`No neighbour found!`);
 
       // Country 2
       return getJSON(
-        `BASE_URL/codes.alpha_3/${neighbour}`,
+        `${BASE_URL}/codes.alpha_3/${neighbour}`,
         'Country not found',
         AUTH_OPTIONS,
       );
