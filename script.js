@@ -133,8 +133,9 @@ const getCountryData = function (country) {
     AUTH_OPTIONS,
   )
     .then(data => {
-      renderCountry(data.data.objects[0]);
-      const neighbour = data.data.objects[0].borders[0];
+      const country = data.data.objects[0];
+      renderCountry(country);
+      const neighbour = country.borders[0];
 
       if (!neighbour) throw new Error(`No neighbour found!`);
 
@@ -145,7 +146,10 @@ const getCountryData = function (country) {
         AUTH_OPTIONS,
       );
     })
-    .then(data => renderCountry(data.data.objects[0], 'neighbour'))
+    .then(data => {
+      const neighbourData = data.data.objects[0];
+      renderCountry(neighbourData, 'neighbour');
+    })
     .catch(err => {
       console.error(`${err} ⚠️`);
       renderError(`Something went wrong ⚠️ ${err.message}. Try again!`);
