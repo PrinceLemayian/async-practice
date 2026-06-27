@@ -120,6 +120,9 @@ const getJSON = function (
 // };
 
 const getCountryData = function (country) {
+  // Clear container first
+  countriesContainer.innerHTML = '';
+  countriesContainer.style.opacity = 0;
   // Country 1
 
   getJSON(
