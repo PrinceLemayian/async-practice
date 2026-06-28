@@ -158,8 +158,46 @@ const getCountryData = function (country) {
       countriesContainer.style.opacity = 1;
     });
 };
+//
+// btn.addEventListener('click', function () {
+//   btn.disabled = true;
+//   getCountryData('kenya').finally(() => (btn.disabled = false));
+// });
 
-btn.addEventListener('click', function () {
-  btn.disabled = true;
-  getCountryData('kenya').finally(() => (btn.disabled = false));
-});
+// https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}
+
+const whereAmI = function (lat, lng) {
+  fetch(
+    `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}`,
+  )
+    .then(response => {
+      if (!response.ok)
+        throw new Error(`Problem with geocoding (${response.status})`);
+
+      return response.json();
+    })
+    .then(data => {
+      const countryName = data.countryName;
+      const city = data.city;
+      console.log(`You are in ${city}, ${countryName}`);
+
+      return getJSON(
+        `${BASE_URL}/names.common/${countryName}`,
+        'Country not found',
+        AUTH_OPTIONS,
+      );
+    })
+    .then(data => {
+      const countryData = data.data.objects[0];
+      renderCountry(countryData);
+    })
+    .catch(err => {
+      console.error(`Something went wrong ${err.message}`);
+      renderError(`Something went wrong ${err.message}`);
+    })
+    .finally(() => {
+      countriesContainer.style.opacity = 1;
+    });
+};
+
+whereAmI(-33.933, 18.474);
